@@ -10,13 +10,7 @@ import (
 
 func TestDownloadPhoto(t *testing.T) {
 	start := time.Now()
-	photo, err := unsplash.GetRandomPhoto()
-	if err != nil {
-		t.Fatalf("get url error: %v", err)
-	}
-	_, err = unsplash.GetDownloadURL(photo.ID)
-
-	err = DownloadPhoto(photo.ID, photo.Urls.Small)
+	err := DownloadPhoto("eyJhcHBfaWQiOjE1OTcyNn0", "https://images.unsplash.com/photo-1596517447567-46a03909ffa0?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjE1OTcyNn0")
 	spentTime := time.Since(start)
 	fmt.Printf("time spent %d s", spentTime/time.Second)
 	if err != nil {

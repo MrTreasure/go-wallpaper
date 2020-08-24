@@ -18,7 +18,7 @@ var (
 )
 
 const PATH = "./Photos/"
-const BUFFER_SIZE = 500 * 1024
+const BUFFER_SIZE = 100 * 1024
 
 func init() {
 	client = resty.New()
@@ -34,8 +34,6 @@ func DownloadPhoto(photoName, url string) error {
 	var wg sync.WaitGroup
 	wg.Add(len(chunks))
 	totalChunk := make([][]byte, len(chunks))
-
-	fmt.Printf("chunks %v\n", chunks)
 
 	for index, val := range chunks {
 		fmt.Printf("DownloadPhoto-image download start %d\n", index)
@@ -72,7 +70,7 @@ func dividerBuffer(size, chunkSize int) [][]int {
 	out := make([][]int, turn)
 
 	for i := 0; i < turn; i++ {
-		out[i] = make([]int, 2)
+		out[i] = make([]int, chunkSize)
 		if i == 0 {
 			out[i][0] = 0
 		} else {
@@ -84,7 +82,6 @@ func dividerBuffer(size, chunkSize int) [][]int {
 		}
 		out[i][1] = next
 	}
-	fmt.Printf("chunks in divide: %v \n", out)
 	return out
 }
 
