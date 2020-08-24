@@ -2,9 +2,9 @@ package unsplash
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-resty/resty/v2"
 	"log"
+	"time"
 )
 
 const (
@@ -31,13 +31,12 @@ func GetRandomPhoto() (*Photo, error) {
 		log.Printf("unmarshal error: %v", err)
 		return nil, err
 	}
-	fmt.Println(photo.ID)
 	return photo, nil
 }
 
 func GetDownloadURL(id string) (string, error) {
 	downloadURL := &DownloadUrl{}
-	res, err := client.R().SetPathParams(map[string]string{
+	res, err := client.SetRetryCount(3).SetRetryWaitTime(5 * time.Second).R().SetPathParams(map[string]string{
 		"id": id,
 	}).Get("/photos/{id}/download")
 
