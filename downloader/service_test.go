@@ -5,15 +5,20 @@ import (
 	"go-wallpaper/unsplash"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestDownloadPhoto(t *testing.T) {
+	start := time.Now()
 	photo, err := unsplash.GetRandomPhoto()
 	if err != nil {
 		t.Fatalf("get url error: %v", err)
 	}
-	url, err := unsplash.GetDownloadURL(photo.ID)
-	err = DownloadPhoto(photo.Description, url)
+	_, err = unsplash.GetDownloadURL(photo.ID)
+
+	err = DownloadPhoto(photo.ID, photo.Urls.Small)
+	spentTime := time.Since(start)
+	fmt.Printf("time spent %d s", spentTime/time.Second)
 	if err != nil {
 		t.Fatalf("download url error: %v", err)
 	}
@@ -36,5 +41,18 @@ func TestDivideBuffer(t *testing.T) {
 		if !reflect.DeepEqual(val, out[index]) {
 			t.Fatalf("divide faild, want %v, got %v", want, out)
 		}
+	}
+}
+
+func TestGetSize(t *testing.T) {
+	photo, err := unsplash.GetRandomPhoto()
+	if err != nil {
+		t.Fatalf("get url error: %v", err)
+	}
+	url, err := unsplash.GetDownloadURL(photo.ID)
+	size, err := getContentSize(url)
+	fmt.Printf("size: %d", size)
+	if size == 0 {
+		t.Fatalf("error size: %d", size)
 	}
 }
