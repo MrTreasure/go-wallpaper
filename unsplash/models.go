@@ -90,3 +90,7 @@ type Urls struct {
 	Small   string `json:"small"`
 	Thumb   string `json:"thumb"`
 }
+
+type DownloadUrl struct {
+	URL string `json:"url"`
+}

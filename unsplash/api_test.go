@@ -6,9 +6,9 @@ import (
 )
 
 func TestGetRandomPhoto(t *testing.T) {
-	url, err := GetRandomPhoto()
-	fmt.Printf("resp: %s", url)
-	if err != nil || url == "" {
+	photo, err := GetRandomPhoto()
+	if err != nil || photo == nil {
 		t.Fatalf("error: %v", err)
 	}
+	fmt.Printf("resp: %s", photo.ID)
 }
