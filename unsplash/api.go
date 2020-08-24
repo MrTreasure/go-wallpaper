@@ -1,6 +1,7 @@
 package unsplash
 
 import (
+	"encoding/json"
 	"github.com/go-resty/resty/v2"
 	"log"
 )
@@ -17,10 +18,17 @@ func init() {
 }
 
 func GetRandomPhoto() (string, error) {
+	photo := &Photo{}
 	res, err := client.R().Get("photos/random")
 	if err != nil {
 		log.Printf("GetRandomPhoto error: %v", err)
 		return "", err
 	}
-	return string(res.Body()), nil
+
+	err = json.Unmarshal(res.Body(), photo)
+	if err != nil {
+		log.Printf("unmarshal error: %v", err)
+		return "", err
+	}
+	return photo.Urls.Full, nil
 }
