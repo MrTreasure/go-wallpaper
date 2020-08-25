@@ -2,51 +2,16 @@ package downloader
 
 import (
 	"fmt"
-	"go-wallpaper/unsplash"
-	"reflect"
 	"testing"
 	"time"
 )
 
 func TestDownloadPhoto(t *testing.T) {
 	start := time.Now()
-	err := DownloadPhoto("eyJhcHBfaWQiOjE1OTcyNn0", "https://images.unsplash.com/photo-1596517447567-46a03909ffa0?ixlib=rb-1.2.1&q=85&fm=jpg&crop=entropy&cs=srgb&ixid=eyJhcHBfaWQiOjE1OTcyNn0")
+	err := master("eyJhcHBfaWQiOjE1OTcyNn0", "https://images.alphacoders.com/539/539674.jpg")
 	spentTime := time.Since(start)
 	fmt.Printf("time spent %d s", spentTime/time.Second)
 	if err != nil {
 		t.Fatalf("download url error: %v", err)
-	}
-}
-
-func TestGetBaseURL(t *testing.T) {
-	path := getBaseURL()
-	if path == "" {
-		t.Fatalf("get baseURL error")
-	}
-	fmt.Printf("path: %s", path)
-}
-
-func TestDivideBuffer(t *testing.T) {
-	size, chunkSize := 23, 4
-	out := dividerBuffer(size, chunkSize)
-	want := [][]int{[]int{0, 4}, []int{5, 9}, []int{10, 14}, []int{15, 19}, []int{20, 23}}
-
-	for index, val := range out {
-		if !reflect.DeepEqual(val, out[index]) {
-			t.Fatalf("divide faild, want %v, got %v", want, out)
-		}
-	}
-}
-
-func TestGetSize(t *testing.T) {
-	photo, err := unsplash.GetRandomPhoto()
-	if err != nil {
-		t.Fatalf("get url error: %v", err)
-	}
-	url, err := unsplash.GetDownloadURL(photo.ID)
-	size, err := getContentSize(url)
-	fmt.Printf("size: %d", size)
-	if size == 0 {
-		t.Fatalf("error size: %d", size)
 	}
 }
