@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -137,4 +140,47 @@ func combineChunk(bytesList [][]byte) *bytes.Buffer {
 func writeFile(path, filename, contentType string, data []byte) error {
 	err := ioutil.WriteFile(path+filename+"."+contentType, data, 777)
 	return err
+}
+
+type WriteCounter struct {
+	Current int
+	Total   int
+}
+
+func (wc *WriteCounter) Write(p []byte) (int, error) {
+	n := len(p)
+	wc.Current += n
+	wc.PrintProgress()
+	return n, nil
+}
+
+func (wc WriteCounter) PrintProgress() {
+	fmt.Printf("\r%s", strings.Repeat(" ", 35))
+	fc := float32(wc.Current)
+	ft := float32(wc.Total)
+	fmt.Printf("\rDownloading... %.2f%% complete\n", (fc/ft)*100)
+}
+
+func displayProgress(filename, url string) error {
+	meta, err := getContentMeta(url)
+	if err != nil {
+		return err
+	}
+	out, err := os.Create(filename + "." + meta.contentType)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	wc := &WriteCounter{0, meta.size}
+	// resp, err := resty.New().R().Get(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(out, io.TeeReader(resp.Body, wc))
+	if err != nil {
+		return err
+	}
+	return nil
 }
